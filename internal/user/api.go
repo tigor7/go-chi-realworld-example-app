@@ -1,4 +1,4 @@
-package users
+package user
 
 import (
 	"encoding/json"
@@ -7,14 +7,14 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-type usersHandler struct {
+type userHandler struct {
 }
 
-func NewUsersHandler() usersHandler {
-	return usersHandler{}
+func NewUserHandler() userHandler {
+	return userHandler{}
 }
 
-func (h *usersHandler) RegisterRoutes(r *chi.Mux) {
+func (h *userHandler) RegisterRoutes(r *chi.Mux) {
 	r.Post("/api/users", h.handleRegister)
 	r.Post("/api/users/login", h.handleLogin)
 }
@@ -27,13 +27,13 @@ type registerRequest struct {
 	} `json:"user"`
 }
 
-func (h *usersHandler) handleRegister(w http.ResponseWriter, r *http.Request) {
+func (h *userHandler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	request := registerRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 	}
 }
 
-func (h *usersHandler) handleLogin(w http.ResponseWriter, r *http.Request) {
+func (h *userHandler) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 }
