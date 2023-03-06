@@ -6,8 +6,8 @@ type userRepository struct {
 	db *sqlx.DB
 }
 
-func NewUserRepository(db *sqlx.DB) userRepository {
-	return userRepository{
+func NewUserRepository(db *sqlx.DB) userRepositoryInterface {
+	return &userRepository{
 		db: db,
 	}
 }

@@ -8,10 +8,10 @@ import (
 )
 
 type userHandler struct {
-	userService userService
+	userService userServiceInterface
 }
 
-func NewUserHandler(s userService) userHandler {
+func NewUserHandler(s userServiceInterface) userHandler {
 	return userHandler{
 		userService: s,
 	}
