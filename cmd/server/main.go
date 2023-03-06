@@ -25,15 +25,17 @@ func main() {
 	}
 	server := http.Server{
 		Addr:    "127.0.0.1:8000",
-		Handler: buildHandler(),
+		Handler: buildHandler(db),
 	}
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatalln("Failed to serve the app:", err.Error())
 	}
 }
-func buildHandler() http.Handler {
+func buildHandler(db *sqlx.DB) http.Handler {
 	r := chi.NewRouter()
-	userHandler := user.NewUserHandler()
+	userRepository := user.NewUserRepository(db)
+	userService := user.NewUserService(userRepository)
+	userHandler := user.NewUserHandler(userService)
 	userHandler.RegisterRoutes(r)
 	return r
 }

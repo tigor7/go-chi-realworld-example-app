@@ -1,8 +1,11 @@
 package user
 
 type userService struct {
+	userRepository userRepository
 }
 
-func NewUserService() userService {
-	return userService{}
+func NewUserService(r userRepository) userService {
+	return userService{
+		userRepository: r,
+	}
 }

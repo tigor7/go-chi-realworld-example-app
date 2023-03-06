@@ -8,10 +8,13 @@ import (
 )
 
 type userHandler struct {
+	userService userService
 }
 
-func NewUserHandler() userHandler {
-	return userHandler{}
+func NewUserHandler(s userService) userHandler {
+	return userHandler{
+		userService: s,
+	}
 }
 
 func (h *userHandler) RegisterRoutes(r *chi.Mux) {
