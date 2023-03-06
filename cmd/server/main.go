@@ -2,10 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
+	"net/http"
 	"path/filepath"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -21,8 +22,17 @@ func main() {
 	if err := runMigrations(db.DB); err != nil {
 		log.Fatalln("Failed to migrate SQL files:", err.Error())
 	}
-
-	fmt.Println("hello world")
+	server := http.Server{
+		Addr:    "127.0.0.1:8000",
+		Handler: buildHandler(),
+	}
+	if err := server.ListenAndServe(); err != nil {
+		log.Fatalln("Failed to serve the app:", err.Error())
+	}
+}
+func buildHandler() http.Handler {
+	r := chi.NewRouter()
+	return r
 }
 
 func connectDB() (*sqlx.DB, error) {
