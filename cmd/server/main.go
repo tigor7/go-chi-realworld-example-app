@@ -12,6 +12,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"github.com/tigor7/go-chi-realworld-example-app/internal/users"
 )
 
 func main() {
@@ -32,6 +33,8 @@ func main() {
 }
 func buildHandler() http.Handler {
 	r := chi.NewRouter()
+	usersHandler := users.NewUsersHandler()
+	usersHandler.RegisterRoutes(r)
 	return r
 }
 
