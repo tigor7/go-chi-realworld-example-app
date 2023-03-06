@@ -35,6 +35,15 @@ func (h *userHandler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 	}
+	u := User{
+		Username: request.User.Username,
+		Email:    request.User.Email,
+		Password: request.User.Password,
+	}
+	if err := h.userService.Register(u); err != nil {
+
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func (h *userHandler) handleLogin(w http.ResponseWriter, r *http.Request) {

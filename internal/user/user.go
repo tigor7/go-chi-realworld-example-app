@@ -12,6 +12,7 @@ type User struct {
 }
 
 type userServiceInterface interface {
+	Register(User) error
 }
 
 type userRepositoryInterface interface {
