@@ -41,7 +41,7 @@ func (h *userHandler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		Password: request.User.Password,
 	}
 	if err := h.userService.Register(u); err != nil {
-
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	w.WriteHeader(http.StatusOK)
 }

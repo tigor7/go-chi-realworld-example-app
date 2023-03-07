@@ -8,6 +8,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/lib/pq v1.10.0
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 )
 
 require (

@@ -64,5 +64,8 @@ func runMigrations(instance *sql.DB) error {
 	if err != nil {
 		return err
 	}
-	return m.Up()
+	if err := m.Up(); err != migrate.ErrNoChange {
+		return err
+	}
+	return nil
 }
