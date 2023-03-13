@@ -15,6 +15,12 @@ func NewUserRepository(db *sqlx.DB) userRepositoryInterface {
 	}
 }
 
+func (r *userRepository) GetByEmail(email string) (User, error) {
+	u := User{}
+	err := r.db.Get(&u, "SELECT * FROM users WHERE email=$1", email)
+	return u, err
+}
+
 func (r *userRepository) Create(u User) error {
 	hash, err := hashPassword(u.Password)
 	if err != nil {
@@ -31,4 +37,9 @@ func hashPassword(password string) (string, error) {
 		return "", err
 	}
 	return string(hash), nil
+}
+
+func ComparePassword(hashed string, password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(password))
+	return err == nil
 }

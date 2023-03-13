@@ -63,6 +63,34 @@ func (h *userHandler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	httputil.Respond(w, http.StatusOK, NewUserResponse(u, token))
 }
 
-func (h *userHandler) handleLogin(w http.ResponseWriter, r *http.Request) {
+type loginRequest struct {
+	User struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	} `json:"user"`
+}
 
+func (r *loginRequest) Validate() error {
+	return validation.ValidateStruct(&r.User,
+		validation.Field(&r.User.Email, validation.Required, validation.Length(0, 255), is.Email),
+		validation.Field(&r.User.Password, validation.Required, validation.Length(8, 255)),
+	)
+}
+
+func (h *userHandler) handleLogin(w http.ResponseWriter, r *http.Request) {
+	request := loginRequest{}
+	if err := httputil.BindAndValidate(r, &request); err != nil {
+		httputil.RespondErr(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	u := User{
+		Email:    request.User.Email,
+		Password: request.User.Password,
+	}
+	us, token, err := h.userService.Login(u)
+	if err != nil {
+		httputil.RespondErr(w, http.StatusInternalServerError, err)
+		return
+	}
+	httputil.Respond(w, http.StatusOK, NewUserResponse(us, token))
 }
