@@ -26,9 +26,11 @@ func (h *userHandler) RegisterRoutes(r *chi.Mux) {
 
 type registerRequest struct {
 	User struct {
-		Username string `json:"username"`
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Username string  `json:"username"`
+		Email    string  `json:"email"`
+		Password string  `json:"password"`
+		Bio      *string `json:"bio"`
+		Image    *string `json:"image"`
 	} `json:"user"`
 }
 
@@ -50,6 +52,8 @@ func (h *userHandler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		Username: request.User.Username,
 		Email:    request.User.Email,
 		Password: request.User.Password,
+		Bio:      request.User.Bio,
+		Image:    request.User.Image,
 	}
 	token, err := h.userService.Register(u)
 	if err != nil {

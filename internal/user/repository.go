@@ -21,7 +21,7 @@ func (r *userRepository) Create(u User) error {
 		return err
 	}
 	u.Password = hash
-	_, err = r.db.NamedExec("INSERT INTO users (id, username, email, password) VALUES (:id, :username, :email, :password)", u)
+	_, err = r.db.NamedExec("INSERT INTO users (id, username, email, password, bio, image) VALUES (:id, :username, :email, :password, :bio, :image)", u)
 	return err
 }
 
