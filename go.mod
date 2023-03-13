@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
+	github.com/golang-jwt/jwt/v5 v5.0.0-rc.1
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/google/uuid v1.3.0
 	github.com/jmoiron/sqlx v1.3.5

@@ -35,8 +35,8 @@ type registerRequest struct {
 func (r *registerRequest) Validate() error {
 	return validation.ValidateStruct(&r.User,
 		validation.Field(&r.User.Username, validation.Required, validation.Length(2, 255)),
-		validation.Field(&r.User.Email, validation.Required, validation.Length(0, 255)),
-		validation.Field(&r.User.Password, validation.Required, validation.Length(8, 255), is.Email),
+		validation.Field(&r.User.Email, validation.Required, validation.Length(0, 255), is.Email),
+		validation.Field(&r.User.Password, validation.Required, validation.Length(8, 255)),
 	)
 }
 
@@ -51,11 +51,12 @@ func (h *userHandler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		Email:    request.User.Email,
 		Password: request.User.Password,
 	}
-	if err := h.userService.Register(u); err != nil {
+	token, err := h.userService.Register(u)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
+	httputil.Respond(w, http.StatusOK, NewUserResponse(u, token))
 }
 
 func (h *userHandler) handleLogin(w http.ResponseWriter, r *http.Request) {
