@@ -16,9 +16,12 @@ type User struct {
 type userServiceInterface interface {
 	Register(User) (token string, err error)
 	Login(User) (User, string, error)
+
+	GetProfile(username string) (User, error)
 }
 
 type userRepositoryInterface interface {
 	GetByEmail(email string) (User, error)
+	GetByUsername(username string) (User, error)
 	Create(User) error
 }

@@ -1,6 +1,9 @@
 package user
 
 import (
+	"database/sql"
+	"errors"
+
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -18,6 +21,18 @@ func NewUserRepository(db *sqlx.DB) userRepositoryInterface {
 func (r *userRepository) GetByEmail(email string) (User, error) {
 	u := User{}
 	err := r.db.Get(&u, "SELECT * FROM users WHERE email=$1", email)
+	if err == sql.ErrNoRows {
+		return u, errors.New("User not found")
+	}
+	return u, err
+}
+
+func (r *userRepository) GetByUsername(username string) (User, error) {
+	u := User{}
+	err := r.db.Get(&u, "SELECT * FROM users WHERE username=$1", username)
+	if err == sql.ErrNoRows {
+		return u, errors.New("User not found")
+	}
 	return u, err
 }
 

@@ -22,6 +22,8 @@ func NewUserHandler(s userServiceInterface) userHandler {
 func (h *userHandler) RegisterRoutes(r *chi.Mux) {
 	r.Post("/api/users", h.handleRegister)
 	r.Post("/api/users/login", h.handleLogin)
+
+	r.Get("/api/profiles/{username}", h.handleGetProfile)
 }
 
 type registerRequest struct {
@@ -93,4 +95,14 @@ func (h *userHandler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	httputil.Respond(w, http.StatusOK, NewUserResponse(us, token))
+}
+
+func (h *userHandler) handleGetProfile(w http.ResponseWriter, r *http.Request) {
+	username := chi.URLParam(r, "username")
+	u, err := h.userService.GetProfile(username)
+	if err != nil {
+		httputil.RespondErr(w, http.StatusInternalServerError, err)
+		return
+	}
+	httputil.Respond(w, http.StatusOK, NewProfileResponse(u))
 }

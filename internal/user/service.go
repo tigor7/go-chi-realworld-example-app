@@ -45,3 +45,7 @@ func (s *userService) Login(u User) (User, string, error) {
 	}
 	return us, token, nil
 }
+
+func (s *userService) GetProfile(username string) (User, error) {
+	return s.userRepository.GetByUsername(username)
+}
