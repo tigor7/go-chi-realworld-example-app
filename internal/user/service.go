@@ -49,3 +49,7 @@ func (s *userService) Login(u User) (User, string, error) {
 func (s *userService) GetProfile(username string) (User, error) {
 	return s.userRepository.GetByUsername(username)
 }
+
+func (s *userService) GetUserByID(id uuid.UUID) (User, error) {
+	return s.userRepository.GetByUserID(id)
+}

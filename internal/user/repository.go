@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -30,6 +31,15 @@ func (r *userRepository) GetByEmail(email string) (User, error) {
 func (r *userRepository) GetByUsername(username string) (User, error) {
 	u := User{}
 	err := r.db.Get(&u, "SELECT * FROM users WHERE username=$1", username)
+	if err == sql.ErrNoRows {
+		return u, errors.New("User not found")
+	}
+	return u, err
+}
+
+func (r *userRepository) GetByUserID(id uuid.UUID) (User, error) {
+	u := User{}
+	err := r.db.Get(&u, "SELECT * FROM users WHERE id=$1", id)
 	if err == sql.ErrNoRows {
 		return u, errors.New("User not found")
 	}

@@ -17,8 +17,8 @@ func CreateJWT(id uuid.UUID) (string, error) {
 	}).SignedString([]byte("secret"))
 }
 
-func ValidateJWT(f func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func ValidateJWT(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		t, ok := r.Header["Authorization"]
 		if len(t) == 0 {
 			log.Println("Token not found")
@@ -27,7 +27,6 @@ func ValidateJWT(f func(w http.ResponseWriter, r *http.Request)) http.HandlerFun
 		}
 		tokenString := strings.Split(t[0], " ")[1]
 		if !ok {
-			log.Println("Invalid token or not found", t, len(t), t[0])
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
@@ -50,6 +49,6 @@ func ValidateJWT(f func(w http.ResponseWriter, r *http.Request)) http.HandlerFun
 		}
 
 		ctx := context.WithValue(r.Context(), "uid", claims["uid"])
-		f(w, r.WithContext(ctx))
-	}
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }

@@ -18,10 +18,12 @@ type userServiceInterface interface {
 	Login(User) (User, string, error)
 
 	GetProfile(username string) (User, error)
+	GetUserByID(id uuid.UUID) (User, error)
 }
 
 type userRepositoryInterface interface {
 	GetByEmail(email string) (User, error)
 	GetByUsername(username string) (User, error)
+	GetByUserID(id uuid.UUID) (User, error)
 	Create(User) error
 }

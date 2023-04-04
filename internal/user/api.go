@@ -6,6 +6,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
+	"github.com/google/uuid"
+	"github.com/tigor7/go-chi-realworld-example-app/internal/auth"
 	"github.com/tigor7/go-chi-realworld-example-app/internal/httputil"
 )
 
@@ -22,8 +24,14 @@ func NewUserHandler(s userServiceInterface) userHandler {
 func (h *userHandler) RegisterRoutes(r *chi.Mux) {
 	r.Post("/api/users", h.handleRegister)
 	r.Post("/api/users/login", h.handleLogin)
-
 	r.Get("/api/profiles/{username}", h.handleGetProfile)
+
+	// Auth routes
+	r.Group(func(r chi.Router) {
+		r.Use(auth.ValidateJWT)
+		r.Get("/api/user", h.handleGetUser)
+	})
+
 }
 
 type registerRequest struct {
@@ -105,4 +113,19 @@ func (h *userHandler) handleGetProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	httputil.Respond(w, http.StatusOK, NewProfileResponse(u))
+}
+
+func (h *userHandler) handleGetUser(w http.ResponseWriter, r *http.Request) {
+	uid := uidFromRequest(r)
+	u, err := h.userService.GetUserByID(uid)
+	if err != nil {
+		httputil.RespondErr(w, http.StatusInternalServerError, err)
+		return
+	}
+	httputil.Respond(w, http.StatusOK, NewUserResponse(u, ""))
+}
+
+func uidFromRequest(r *http.Request) uuid.UUID {
+	uid, _ := uuid.Parse(r.Context().Value("uid").(string))
+	return uid
 }
