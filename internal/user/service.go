@@ -53,3 +53,11 @@ func (s *userService) GetProfile(username string) (User, error) {
 func (s *userService) GetUserByID(id uuid.UUID) (User, error) {
 	return s.userRepository.GetByUserID(id)
 }
+
+func (s *userService) Follow(uid uuid.UUID, username string) (User, error) {
+	friend, err := s.userRepository.GetByUsername(username)
+	if err != nil {
+		return friend, err
+	}
+	return friend, s.userRepository.Follow(uid, friend.ID)
+}

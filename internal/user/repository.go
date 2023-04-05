@@ -56,6 +56,11 @@ func (r *userRepository) Create(u User) error {
 	return err
 }
 
+func (r *userRepository) Follow(uid uuid.UUID, friendID uuid.UUID) error {
+	_, err := r.db.Exec("INSERT INTO follows (user_id, followed_id) SELECT $1, $2 WHERE NOT EXISTS(SELECT * FROM follows WHERE user_id=$1 AND followed_id=$2)", uid, friendID)
+	return err
+}
+
 func hashPassword(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {

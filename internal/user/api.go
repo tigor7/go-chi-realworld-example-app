@@ -30,6 +30,7 @@ func (h *userHandler) RegisterRoutes(r *chi.Mux) {
 	r.Group(func(r chi.Router) {
 		r.Use(auth.ValidateJWT)
 		r.Get("/api/user", h.handleGetUser)
+		r.Post("/api/profiles/{username}/follow", h.handleFollow)
 	})
 
 }
@@ -123,6 +124,18 @@ func (h *userHandler) handleGetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	httputil.Respond(w, http.StatusOK, NewUserResponse(u, ""))
+}
+
+func (h *userHandler) handleFollow(w http.ResponseWriter, r *http.Request) {
+	uid := uidFromRequest(r)
+	username := chi.URLParam(r, "username")
+
+	friend, err := h.userService.Follow(uid, username)
+	if err != nil {
+		httputil.RespondErr(w, http.StatusInternalServerError, err)
+		return
+	}
+	httputil.Respond(w, http.StatusOK, NewProfileResponse(friend))
 }
 
 func uidFromRequest(r *http.Request) uuid.UUID {

@@ -19,6 +19,8 @@ type userServiceInterface interface {
 
 	GetProfile(username string) (User, error)
 	GetUserByID(id uuid.UUID) (User, error)
+
+	Follow(uid uuid.UUID, username string) (User, error)
 }
 
 type userRepositoryInterface interface {
@@ -26,4 +28,5 @@ type userRepositoryInterface interface {
 	GetByUsername(username string) (User, error)
 	GetByUserID(id uuid.UUID) (User, error)
 	Create(User) error
+	Follow(uid uuid.UUID, friendID uuid.UUID) error
 }
