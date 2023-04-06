@@ -61,3 +61,11 @@ func (s *userService) Follow(uid uuid.UUID, username string) (User, error) {
 	}
 	return friend, s.userRepository.Follow(uid, friend.ID)
 }
+
+func (s *userService) Unfollow(uid uuid.UUID, username string) (User, error) {
+	friend, err := s.userRepository.GetByUsername(username)
+	if err != nil {
+		return friend, err
+	}
+	return friend, s.userRepository.Unfollow(uid, friend.ID)
+}

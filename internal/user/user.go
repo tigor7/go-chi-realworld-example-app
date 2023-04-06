@@ -21,6 +21,7 @@ type userServiceInterface interface {
 	GetUserByID(id uuid.UUID) (User, error)
 
 	Follow(uid uuid.UUID, username string) (User, error)
+	Unfollow(uid uuid.UUID, username string) (User, error)
 }
 
 type userRepositoryInterface interface {
@@ -29,4 +30,5 @@ type userRepositoryInterface interface {
 	GetByUserID(id uuid.UUID) (User, error)
 	Create(User) error
 	Follow(uid uuid.UUID, friendID uuid.UUID) error
+	Unfollow(uid uuid.UUID, friendID uuid.UUID) error
 }

@@ -61,6 +61,11 @@ func (r *userRepository) Follow(uid uuid.UUID, friendID uuid.UUID) error {
 	return err
 }
 
+func (r *userRepository) Unfollow(uid uuid.UUID, friendID uuid.UUID) error {
+	_, err := r.db.Exec("DELETE FROM follows WHERE user_id=$1 AND followed_id=$2", uid, friendID)
+	return err
+}
+
 func hashPassword(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {

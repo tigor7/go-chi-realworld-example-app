@@ -31,6 +31,8 @@ func (h *userHandler) RegisterRoutes(r *chi.Mux) {
 		r.Use(auth.ValidateJWT)
 		r.Get("/api/user", h.handleGetUser)
 		r.Post("/api/profiles/{username}/follow", h.handleFollow)
+		r.Delete("/api/profiles/{username}/follow", h.handleUnfollow)
+
 	})
 
 }
@@ -131,6 +133,18 @@ func (h *userHandler) handleFollow(w http.ResponseWriter, r *http.Request) {
 	username := chi.URLParam(r, "username")
 
 	friend, err := h.userService.Follow(uid, username)
+	if err != nil {
+		httputil.RespondErr(w, http.StatusInternalServerError, err)
+		return
+	}
+	httputil.Respond(w, http.StatusOK, NewProfileResponse(friend))
+}
+
+func (h *userHandler) handleUnfollow(w http.ResponseWriter, r *http.Request) {
+	uid := uidFromRequest(r)
+	username := chi.URLParam(r, "username")
+
+	friend, err := h.userService.Unfollow(uid, username)
 	if err != nil {
 		httputil.RespondErr(w, http.StatusInternalServerError, err)
 		return
