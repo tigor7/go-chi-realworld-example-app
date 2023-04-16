@@ -9,3 +9,8 @@ func NewArticleService(r articleRepositoryInterface) articleServiceInterface {
 		articleRepository: r,
 	}
 }
+
+func (s *articleService) Create(a Article) error {
+	a.Slug = a.Title
+	return s.articleRepository.CreateArticle(a)
+}

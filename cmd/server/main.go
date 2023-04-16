@@ -12,6 +12,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"github.com/tigor7/go-chi-realworld-example-app/internal/article"
 	"github.com/tigor7/go-chi-realworld-example-app/internal/user"
 )
 
@@ -33,10 +34,18 @@ func main() {
 }
 func buildHandler(db *sqlx.DB) http.Handler {
 	r := chi.NewRouter()
+	//User DI
 	userRepository := user.NewUserRepository(db)
 	userService := user.NewUserService(userRepository)
 	userHandler := user.NewUserHandler(userService)
 	userHandler.RegisterRoutes(r)
+
+	//Article DI
+	articleRepository := article.NewArticleRepository(db)
+	articleService := article.NewArticleService(articleRepository)
+	articleHandler := article.NewArticleHandler(articleService)
+	articleHandler.RegisterRoutes(r)
+
 	return r
 }
 
